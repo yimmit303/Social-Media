@@ -1,6 +1,7 @@
 <?php
-require_once("../Repository/UserRepository.php")
-
+require_once("../Repository/UserRepository.php");
+$userRepo = new UserRepository();
+$user = $userRepo->getAllUserInfo();
 ?>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,8 @@ require_once("../Repository/UserRepository.php")
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
 </head>
 <body>
-    
+    <?php
+        echo $user->Username;
+    ?>
 </body>
 </html>

@@ -9,7 +9,7 @@ class Repository
 
     function __construct()
     {
-        $this->conn = new mysqli($servername, $username, $password, $dbname);
+        $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
     }
 
     function close()
