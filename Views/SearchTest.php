@@ -16,7 +16,7 @@
 
     if (sizeof($results) > 0){
         foreach(results){
-            echo "Name:".$results->FirstName;
+            echo "Name:".$results;
             echo "<br />"
         }
     } else {
