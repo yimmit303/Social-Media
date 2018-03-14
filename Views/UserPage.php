@@ -2,6 +2,7 @@
 require_once("../Repository/UserRepository.php");
 $userRepo = new UserRepository();
 $user = $userRepo->getInfoByID(2);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,6 +21,7 @@ $user = $userRepo->getInfoByID(2);
         echo "Would the username user be valid? ".($userRepo->isValidUser("user") ? "TRUE" : "FALSE")."<br />";
         echo "Would the username raboof be valid? ".($userRepo->isValidUser("raboof") ? "TRUE" : "FALSE")."<br />";
         echo "What is the id of user foo? ".$userRepo->getIDByUser("foo")."<br />";
+        $userRepo->addUserBaseInfo("user","pass", "foo", "bar");
     ?>
 </body>
 </html>

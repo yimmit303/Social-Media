@@ -86,5 +86,38 @@ class UserRepository extends Repository
             echo "0 results";
         }
     }
+    function addUser($user)
+    {
+        $sql = "INSERT INTO user (username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture) 
+        VALUES (".$user->Username.", ".$user->Password.", ".$user->FirstName.", ".$user->LastName.", ".$user->DateOfBirth.", ".$user->Bio.", ".$user->Interest.", ".$user->Job.", ".$user->Employer.", ".$user->isSuspended.", ".$user->isPrivate.", ".$user->ProfilePicture.")";
+    }
+    function addUserBaseInfo($username, $password, $firstname, $lastname)
+    {
+        $sql = "INSERT INTO users (username, password, firstName, lastName) VALUES ('".$username."', '".$password."', '".$firstname."', '".$lastname."')";
+        if (mysqli_query($this->conn, $sql)) {
+            return TRUE;
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+        }
+    }
+    function searchUser($name)
+    {
+        $name = chop($name);
+        if(strspn($name," "))
+        {
+            $nameArray = explode($name, " ");
+            foreach($nameArray as $nme)
+            {
+                echo "$nme <br>";
+            }
+        }
+        else
+        {
+            echo "$name<br>";
+        }
+
+        echo "complete";
+        
+    }
 }
 ?>
