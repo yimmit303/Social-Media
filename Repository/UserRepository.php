@@ -96,6 +96,8 @@ class UserRepository extends Repository
     }
     function searchUser($name)
     {
+        if($name == ""){return 0;}
+
         $nameArray = array();
         $name = chop($name);
         if(strpos($name," "))
@@ -105,40 +107,60 @@ class UserRepository extends Repository
             {
                 $inputNameArray[] = $nme;
             }
-            $sql = "SELECT firstName, lastName, username FROM users WHERE firstName REGEXP '".$inputNameArray[0]."' AND lastName REGEXP '".$inputNameArray[1]."' AND isPublic = '1'";
+            $sql = "SELECT userId, username, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture FROM users WHERE firstName REGEXP '".$inputNameArray[0]."' AND lastName REGEXP '".$inputNameArray[1]."' AND isPublic = '1'";
             $result = $this->conn->query($sql);
             
             if ($result->num_rows > 0) 
             {
                 while($row = $result->fetch_assoc()) 
                 {
-                    $nameArray[] = $row["firstName"];
-                    $nameArray[] = $row["lastName"];
-                    $nameArray[] = $row["username"];
+                    $p1 = new User();
+                    $p1->UserId =  $row["userId"];
+                    $p1->UserName =  $row["username"];
+                    $p1->FirstName =  $row["firstName"];
+                    $p1->LastName =  $row["lastName"];
+                    $p1->DateOfBirth = $row['dateOfBirth'];
+                    $p1->Bio = $row['bio'];
+                    $p1->Interest = $row['interest'];
+                    $p1->Job = $row['job'];
+                    $p1->Employer = $row['employeer'];
+
+                    if($nameArray == null){$nameArray = array($p1);}
+                    else{$nameArray += array($p1);}
                 }
             } 
             else {
-                echo "No results found for ".$inputNameArray[0]." ".$inputNameArray[1];
+                return 0;
             }
             return $nameArray;
         }
         else
         {
-            $sql = "SELECT firstName, lastName, username FROM users WHERE firstName REGEXP '".$name."' AND isPublic = '1'";
+            $sql = "SELECT userId, username, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture FROM users WHERE firstName REGEXP '".$name."' AND isPublic = '1'";
             $result = $this->conn->query($sql);
             
             if ($result->num_rows > 0) 
             {
                 while($row = $result->fetch_assoc()) 
                 {
-                    $nameArray[] = $row["firstName"];
-                    $nameArray[] = $row["lastName"];
-                    $nameArray[] = $row["username"];
+                    $p1 = new User();
+                    $p1->UserId =  $row["userId"];
+                    $p1->UserName =  $row["username"];
+                    $p1->FirstName =  $row["firstName"];
+                    $p1->LastName =  $row["lastName"];
+                    $p1->DateOfBirth = $row['dateOfBirth'];
+                    $p1->Bio = $row['bio'];
+                    $p1->Interest = $row['interest'];
+                    $p1->Job = $row['job'];
+                    $p1->Employer = $row['employeer'];
+
+                    if($nameArray == null){$nameArray = array($p1);}
+                    else{array_push($nameArray, $p1);}
                 }
             } 
             else 
             {
-                echo "No results found for ".$name;
+                return 0;
             }
             return $nameArray;
         }

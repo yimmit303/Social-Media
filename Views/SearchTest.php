@@ -6,21 +6,21 @@
 
 <?php
 
-    require("UserRepository.php");
     require_once(realpath(dirname(__FILE__) . '/../Models/User.php'));
+    require_once("../Repository/UserRepository.php");
 
     $repo = new UserRepository;
 
     $name = $_GET['id'];
     $results = $repo->searchUser($name);
 
-    if (sizeof($results) > 0){
-        foreach(results){
-            echo "Name:".$results;
-            echo "<br />"
+    if ($results != 0){
+        foreach($results as $result){
+            echo "Name:".$result->UserName;
+            echo "<br />";
         }
     } else {
-        echo "WE AIN'T FOUND SHIT";
+        echo "No Results for".$name;
     }
 
 ?>
