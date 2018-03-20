@@ -3,7 +3,6 @@
         public $PostID;
         public $Content;
         public $PostDate;
-        public $Likes;
-        public $Dislikes;
+        public $Rating;
     }
 ?>

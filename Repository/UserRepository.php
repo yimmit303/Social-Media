@@ -165,5 +165,20 @@ class UserRepository extends Repository
             return $nameArray;
         }
     }
+    function updateUser($userInfoArray, $id)
+    {
+        #updates Fname, Lname, DoB, interests, job, employer, profile pic, bio, suspended, private
+        $wasSuccessful = FALSE;
+        $sql = "UPDATE users SET firstName = '".$userInfoArray[0]."', lastName = '".$userInfoArray[1]."', ";
+        $sql .= "dateOfBirth = '".$userInfoArray[2]."', interest = '".$userInfoArray[3]."', job = '".$userInfoArray[4]."', ";
+        $sql .= "employeer = '".$userInfoArray[5]."', profilePicture = '".$userInfoArray[6]."', bio = '".$userInfoArray[7]."', ";
+        $sql .= "isSuspended = '".$userInfoArray[8]."', isPublic = '".$userInfoArray[9]."' WHERE userId = ".$id;
+        if ($this->conn->query($sql) === TRUE) {
+            $wasSuccessful = TRUE;
+        } else {
+            echo "Error updating record: " . $conn->error;
+        }
+        return $wasSuccessful;
+    }
 }
 ?>

@@ -3,7 +3,7 @@ class Repository
 {
     private $servername = "localhost";
     private $username = "root";
-    private $password = "zerofourfiveone";
+    private $password = "";
     private $dbname = "users";
     public $conn;
 
