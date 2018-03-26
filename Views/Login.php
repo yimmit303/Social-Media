@@ -18,17 +18,21 @@
 <div class="container">
   <div class="row">
 
-    <div class = "well">
-      <div class="input-group">
-        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-        <input id="email" type="text" class="form-control" name="email" placeholder="Email">
+    <form action = "UserPage.php" method = "post">
+      <input type="hidden" name = "Last_Page"  value="Login"></input>
+      <div class = "well">
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+          <input type="text" class="form-control" name="email" placeholder="Email">
+        </div>
+        <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+          <input type="text" class="form-control" name="password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">Log In</button>
       </div>
-      <div class="input-group">
-        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-        <input id="email" type="text" class="form-control" name="email" placeholder="Password">
-      </div>
-      <button type="button" class="btn btn-default">Submit</button>
-    </div>
+    </form>
+
   </div>
 </div>
 

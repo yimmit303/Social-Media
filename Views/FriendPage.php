@@ -1,6 +1,6 @@
 <?php //INITIAL PHP SCRIPT
-
-$id = $_GET['id'];
+session_start();
+$friend_id = $_GET['friend_id'];
 
 require_once("../Models/Post.php");
 require_once("../Models/User.php");
@@ -25,7 +25,7 @@ foreach($posts as $current){
 }
 
 $userRepo = new UserRepository();
-$ViewedUser = $userRepo->getInfoByID($id);
+$ViewedUser = $userRepo->getInfoByID($friend_id);
 
 ?>
 
@@ -33,7 +33,7 @@ $ViewedUser = $userRepo->getInfoByID($id);
 
 <html lang = "en">
 <head>
-  <title>Friend Page</title>
+  <title><?php echo($ViewedUser->Username);?>'s Page</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -49,8 +49,22 @@ $ViewedUser = $userRepo->getInfoByID($id);
       <a class="navbar-brand" href="#">Generic Social Media</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#"><?php echo($ViewedUser->FirstName);?>'s Page</a></li>
-      <li><a href="#">Manage Friends</a></li>
+
+        <form class="navbar-form navbar-left" action = "UserPage.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button type="submit" class="btn btn navbar-btn">Your Page</button>
+        </form>
+
+        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button type="submit" class="btn navbar-btn">Edit Yourself</button>
+        </form>
+
+        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button class="btn navbar-btn">Manage Friends</button>
+        </form>
+
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
         <div class = "input-group">

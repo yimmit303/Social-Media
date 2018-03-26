@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once("../Models/User.php");
 require_once("../Repository/UserRepository.php");
@@ -8,11 +9,6 @@ $repo = new UserRepository;
 $search_term = $_GET['search'];
 
 $results = $repo->searchUser($search_term);
-
-function redirect_Friend($ID){
-    header("FriendPage.php".$ID);
-    Echo("YUP");
-}
 
 ?>
 
@@ -31,7 +27,7 @@ function redirect_Friend($ID){
 
 <script>
 function redirect_Friend(userid){
-    var baseurl = 'FriendPage.php?id='
+    var baseurl = 'FriendPage.php?friend_id='
     window.location.href = baseurl.concat(userid);
 }
 </script>
@@ -45,8 +41,22 @@ function redirect_Friend(userid){
       <a class="navbar-brand" href="#">Generic Social Media</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Search Results</a></li>
-      <li><a href="#">Manage Friends</a></li>
+
+        <form class="navbar-form navbar-left" action = "UserPage.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button type="submit" class="btn navbar-btn">Your Page</button>
+        </form>
+
+        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button type="submit" class="btn navbar-btn">Edit Yourself</button>
+        </form>
+
+        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
+        <input type="hidden" name = "Last_Page"  value="User"></input>
+        <button class="btn navbar-btn">Manage Friends</button>
+        </form>
+    
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
         <div class = "input-group">
