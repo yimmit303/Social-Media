@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 require_once("../Models/User.php");
 require_once("../Repository/UserRepository.php");
@@ -9,10 +10,7 @@ $search_term = $_GET['search'];
 
 $results = $repo->searchUser($search_term);
 
-function redirect_Friend($ID){
-    header("FriendPage.php".$ID);
-    Echo("YUP");
-}
+$_SESSION['Last_Page'] = 'Search';
 
 ?>
 
@@ -31,8 +29,14 @@ function redirect_Friend($ID){
 
 <script>
 function redirect_Friend(userid){
-    var baseurl = 'FriendPage.php?id='
+    var baseurl = 'FriendPage.php?friend_id='
     window.location.href = baseurl.concat(userid);
+}
+function redirect_user(){
+    window.location.href = 'UserPage.php';
+}
+function redirect_edit(){
+    window.location.href = 'EditUser.php';
 }
 </script>
 
@@ -45,8 +49,11 @@ function redirect_Friend(userid){
       <a class="navbar-brand" href="#">Generic Social Media</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="#">Search Results</a></li>
+
+      <li onclick='redirect_user()'><a href="#">User Page</a></li>
+      <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
       <li><a href="#">Manage Friends</a></li>
+    
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
         <div class = "input-group">
