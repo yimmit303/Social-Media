@@ -1,5 +1,5 @@
 <?php
-require("Repository.php");
+require_once("Repository.php");
 require_once(realpath(dirname(__FILE__) . '/../Models/User.php'));
 class UserRepository extends Repository
 {
@@ -126,7 +126,7 @@ class UserRepository extends Repository
                     $p1->Employer = $row['employeer'];
 
                     if($nameArray == null){$nameArray = array($p1);}
-                    else{$nameArray += array($p1);}
+                    else{$nameArray[] = $p1;}
                 }
             } 
             else {
@@ -155,7 +155,7 @@ class UserRepository extends Repository
                     $p1->Employer = $row['employeer'];
 
                     if($nameArray == null){$nameArray = array($p1);}
-                    else{array_push($nameArray, $p1);}
+                    else{$nameArray[] = $p1;}
                 }
             } 
             else 
@@ -179,6 +179,10 @@ class UserRepository extends Repository
             echo "Error updating record: " . $conn->error;
         }
         return $wasSuccessful;
+    }
+    function isFriend($userId, $friendId)
+    {
+
     }
 }
 ?>
