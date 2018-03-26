@@ -1,9 +1,9 @@
 <?php
     class Post{
-        public $PostID;
+        public $UserId;
+        public $PostId;
         public $Content;
         public $PostDate;
-        public $Likes;
-        public $Dislikes;
+        public $Rating;
     }
 ?>
