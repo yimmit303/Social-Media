@@ -52,6 +52,11 @@ $ViewedUser = $userRepo->getInfoByID($id);
       <li class="active"><a href="#"><?php echo($ViewedUser->FirstName);?>'s Page</a></li>
       <li><a href="#">Manage Friends</a></li>
     </ul>
+    <form class="navbar-form navbar-left" action="SearchResults.php">
+        <div class = "input-group">
+            <input type="text" class="form-control" placeholder="Search For Friends" name="search">
+        </div>
+    </form>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
     </ul>
