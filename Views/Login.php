@@ -1,3 +1,8 @@
+<?php
+session_start();
+$_SESSION['Last_Page'] = 'Login';
+?>
+
 <!DOCTYPE html>
 <html>
 <head>

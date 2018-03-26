@@ -9,6 +9,8 @@ if($id == null){$id=1;}
 
 $userRepo = new UserRepository();
 $CurrentUser = $userRepo->getInfoByID($id);
+
+$_SESSION['Last_Page'] = 'EditUser';
 ?>
 
 <html lang="en">
@@ -22,9 +24,8 @@ $CurrentUser = $userRepo->getInfoByID($id);
 </head>
 
 <script>
-function redirect_user(userid){
-    var baseurl = 'UserPage.php'
-    window.location.href = baseurl;
+function redirect_user(){
+    window.location.href = 'UserPage.php';
 }
 </script>
 
@@ -36,20 +37,9 @@ function redirect_user(userid){
       <a class="navbar-brand" href="#">Generic Social Media</a>
     </div>
     <ul class="nav navbar-nav">
-      <form class="navbar-form navbar-left" action = "UserPage.php" method = "post">
-      <input type="hidden" name = "Last_Page"  value="EditUser"></input>
-        <button type="submit" class="btn navbar-btn">Your Page</button>
-      </form>
-
-      <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-      <input type="hidden" name = "Last_Page"  value="EditUser"></input>
-        <button type="submit" class="btn btn-primary navbar-btn">Edit Yourself</button>
-      </form>
-
-      <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-      <input type="hidden" name = "Last_Page"  value="EditUser"></input>
-        <button class="btn navbar-btn">Manage Friends</button>
-      </form>
+      <li onclick='redirect_user()'><a href="#">User Page</a></li>
+      <li class='active'><a href="#">Edit Yourself</a></li>
+      <li><a href="#">Manage Friends</a></li>
 
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">

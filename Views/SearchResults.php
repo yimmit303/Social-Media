@@ -10,6 +10,8 @@ $search_term = $_GET['search'];
 
 $results = $repo->searchUser($search_term);
 
+$_SESSION['Last_Page'] = 'Search';
+
 ?>
 
 
@@ -30,6 +32,12 @@ function redirect_Friend(userid){
     var baseurl = 'FriendPage.php?friend_id='
     window.location.href = baseurl.concat(userid);
 }
+function redirect_user(){
+    window.location.href = 'UserPage.php';
+}
+function redirect_edit(){
+    window.location.href = 'EditUser.php';
+}
 </script>
 
 <body>
@@ -42,20 +50,9 @@ function redirect_Friend(userid){
     </div>
     <ul class="nav navbar-nav">
 
-        <form class="navbar-form navbar-left" action = "UserPage.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button type="submit" class="btn navbar-btn">Your Page</button>
-        </form>
-
-        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button type="submit" class="btn navbar-btn">Edit Yourself</button>
-        </form>
-
-        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button class="btn navbar-btn">Manage Friends</button>
-        </form>
+      <li onclick='redirect_user()'><a href="#">User Page</a></li>
+      <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
+      <li><a href="#">Manage Friends</a></li>
     
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">

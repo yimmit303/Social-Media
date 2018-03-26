@@ -1,3 +1,9 @@
+<?php
+session_start();
+$_SESSION['Last_Page'] = 'NewUser';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

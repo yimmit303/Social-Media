@@ -41,6 +41,15 @@ $ViewedUser = $userRepo->getInfoByID($friend_id);
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
+<script>
+function redirect_user(){
+    window.location.href = 'UserPage.php';
+}
+function redirect_edit(){
+    window.location.href = 'EditUser.php';
+}
+</script>
+
 <body>
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -50,20 +59,9 @@ $ViewedUser = $userRepo->getInfoByID($friend_id);
     </div>
     <ul class="nav navbar-nav">
 
-        <form class="navbar-form navbar-left" action = "UserPage.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button type="submit" class="btn btn navbar-btn">Your Page</button>
-        </form>
-
-        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button type="submit" class="btn navbar-btn">Edit Yourself</button>
-        </form>
-
-        <form class="navbar-form navbar-left" action = "EditUser.php" method = "post">
-        <input type="hidden" name = "Last_Page"  value="User"></input>
-        <button class="btn navbar-btn">Manage Friends</button>
-        </form>
+        <li onclick='redirect_user()'><a href="#">User Page</a></li>
+        <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
+        <li><a href="#">Manage Friends</a></li>
 
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
