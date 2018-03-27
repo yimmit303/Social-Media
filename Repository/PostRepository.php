@@ -3,25 +3,41 @@ require_once("Repository.php");
 require_once(realpath(dirname(__FILE__) . '/../Models/Post.php'));
 class PostRepository extends Repository
 {
-    function like($postId)
+    function like($userId, $postId)
     {
         $wasSuccessful = FALSE;
-        $sql = "UPDATE posts SET rating = rating + 1 WHERE postId = '".$postId."'";
-        if ($this->conn->query($sql) === TRUE) {
-            $wasSuccessful = TRUE;
-        } else {
-            echo "Error updating record: " . $conn->error;
+        if(!$this->hasBeenRated($userId, $postId))
+        {
+            $sql = "UPDATE posts SET rating = rating + 1 WHERE postId = '".$postId."'";
+            if ($this->conn->query($sql) === TRUE) 
+            {
+                $wasSuccessful = TRUE;
+            } 
+            else 
+            {
+                echo "Error updating record: " . $conn->error;
+            }
+            $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
+            $this->conn->query($sql);
         }
         return $wasSuccessful;
     }
-    function dislike($postId)
+    function dislike($userId, $postId)
     {
         $wasSuccessful = FALSE;
-        $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
-        if ($this->conn->query($sql) === TRUE) {
-            $wasSuccessful = TRUE;
-        } else {
-            echo "Error updating record: " . $conn->error;
+        if(!$this->hasBeenRated($userId, $postId))
+        {
+            $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
+            if ($this->conn->query($sql) === TRUE) 
+            {
+                $wasSuccessful = TRUE;
+            } 
+            else 
+            {
+                echo "Error updating record: " . $conn->error;
+            }
+            $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
+            $this->conn->query($sql);
         }
         return $wasSuccessful;
     }
@@ -98,10 +114,26 @@ class PostRepository extends Repository
                 $post->Rating = $row["rating"];
             }
         } 
-        else {
+        else 
+        {
             echo "Error getting posts: " . $conn->error;
         }
         return $post;
+    }
+    function hasBeenRated($userId, $postId)
+    {
+        $hasBeenRated = FALSE; 
+        $sql = "SELECT * FROM postsrating WHERE userId = '".$userId."' AND postId = '".$postId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) 
+        {
+            $hasBeenRated = TRUE;
+        } 
+        else 
+        {
+            #echo "Error getting posts: " . $conn->error;
+        }
+        return $hasBeenRated;
     }
 
 }
