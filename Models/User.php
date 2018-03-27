@@ -13,6 +13,7 @@ class User{
     public $isSuspended;
     public $isPublic;
     public $ProfilePicture;
+    public $friendArray;
 }
 
 
