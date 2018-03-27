@@ -84,9 +84,24 @@ class PostRepository extends Repository
         }
         return $wasSuccessful;
     }
-    function getSinglePost($userId, $postId)
+    function getSinglePost($postId)
     {
-
+        $sql = "SELECT content, timestamp, rating FROM posts WHERE postId = '".$postId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) 
+        {
+            while($row = $result->fetch_assoc()) 
+            {
+                $post = new Post();
+                $post->Content = $row["content"];
+                $post->PostDate = $row["timestamp"];
+                $post->Rating = $row["rating"];
+            }
+        } 
+        else {
+            echo "Error getting posts: " . $conn->error;
+        }
+        return $post;
     }
 
 }
