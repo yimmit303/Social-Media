@@ -37,7 +37,7 @@ class UserRepository extends Repository
         }
         return $doesExist;
     }
-    function getInfoByID($id)
+    function getInfoByID($id, $getFriendsArray = FALSE)
     {
         $sql = "SELECT userId, username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture FROM users WHERE userId = '".$id."'";
         $result = $this->conn->query($sql);
@@ -58,6 +58,10 @@ class UserRepository extends Repository
                 $user->isSuspended = $row["isSuspended"];
                 $user->isPublic = $row["isPublic"];
                 $user->ProfilePicture = $row["profilePicture"];
+                if($getFriendsArray)
+                {
+                    $user->friendArray = $this->getFriendArray($row["userId"]);
+                }
             }
             return $user;
         } else {
@@ -182,7 +186,64 @@ class UserRepository extends Repository
     }
     function isFriend($userId, $friendId)
     {
-
+        $isFriend = FALSE;
+        $sql = "SELECT userId, friendId FROM friends WHERE userId = '".$userId."' AND friendId = '".$friendId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) 
+        {
+            $isFriend = TRUE;
+        } 
+        else 
+        {
+            #echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+        }
+        return $isFriend;
+    }
+    function addFriend($userId, $friendId)
+    {
+        if($this->isFriend($userId, $friendId))
+        {
+            return TRUE;
+        }
+        $sql = "INSERT INTO friends (userId, friendId) VALUES ('".$userId."', '".$friendId."')";
+        if (mysqli_query($this->conn, $sql)) {
+            return TRUE;
+        } else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+        }
+    }
+    function removeFriend($userId, $friendId)
+    {
+        $wasSuccessful = FALSE;
+        if($this->isFriend($userId, $friendId))
+        {
+            $sql = "DELETE FROM friends WHERE userId = '".$userId."' AND friendId = '".$friendId."'";
+            if ($this->conn->query($sql) === TRUE) {
+                $wasSuccessful = TRUE;
+            } else {
+                echo "Error removing record: " . $conn->error;
+            }
+        }  
+        return $wasSuccessful;
+    }
+    function getFriendArray($userId)
+    {
+        $friendArray = array();
+        $sql = "SELECT friendId FROM friends WHERE userId = '".$userId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0)
+        {
+            while($row = $result->fetch_assoc()) 
+            {
+                $friend = $this->getInfoByID($row["friendId"], FALSE);
+                $friendArray[] = $friend;
+            }
+        } 
+        else 
+        {
+            echo "Error getting friends: " . $conn->error;
+        }
+        return $friendArray;
     }
 }
 ?>
