@@ -5,27 +5,16 @@ $friend_id = $_GET['friend_id'];
 require_once("../Models/Post.php");
 require_once("../Models/User.php");
 require_once("../Repository/UserRepository.php");
-
-//Creating a bunch of dummy posts and a post array
-$p1 = new post();
-$p2 = new post();
-$p3 = new post();
-$p4 = new post();
-$posts = array($p1, $p2, $p3, $p4);
+require_once("../Repository/PostRepository.php");
 
 $LIKE = "<span class='glyphicon glyphicon-thumbs-up'></span>";
 $DISLIKE = "<span class='glyphicon glyphicon-thumbs-down'></span>";
 
-//Filling In Random Garbage information for posts
-foreach($posts as $current){
-    $current->Content   = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar in enim a commodo. Aliquam a interdum diam. Duis pretium semper leo, iaculis eleifend nibh varius sit amet. In hac habitasse platea dictumst. Vestibulum nec tincidunt velit, eget molestie elit. Integer quis gravida velit. Fusce pretium tortor ut felis faucibus suscipit. Morbi id luctus enim, vitae laoreet libero. In a dapibus lacus.";
-    $current->PostDate  = "NOPE";
-    $current->Likes     = "1";
-    $current->Dislikes = "2";
-}
-
 $userRepo = new UserRepository();
+$postRepo = new PostRepository();
 $ViewedUser = $userRepo->getInfoByID($friend_id);
+
+$posts = $postRepo->getUserPosts($friend_id);
 
 ?>
 

@@ -8,7 +8,39 @@ $id = $_SESSION['id'];
 if($id == null){$id=1;}
 
 $userRepo = new UserRepository();
+
+$edited = isset($_POST['Edited']);
+
+if($edited){
+  $new_info = array();
+  array_push($new_info, $_POST['firstname']);
+  array_push($new_info, $_POST['lastname']);
+  array_push($new_info, $_POST['dob']);
+  //array_push($new_info, NULL);
+  array_push($new_info, $_POST['interests']);
+  array_push($new_info, $_POST['job']);
+  array_push($new_info, $_POST['emp']);
+  array_push($new_info, $_POST['pfp']);
+  array_push($new_info, $_POST['bio']);
+  if($_POST['susp'] == 'Active'){array_push($new_info, 1);}
+  else{array_push($new_info, 0);}
+  if($_POST['priv'] == 'Public'){array_push($new_info, 1);}
+  else{array_push($new_info, 0);}
+  $userRepo->updateUser($new_info, $id);
+  $CurrentUser = $userRepo->getInfoByID($id);
+}
+
 $CurrentUser = $userRepo->getInfoByID($id);
+
+$suspended='';
+$notsuspended='';
+if($CurrentUser->isSuspended){$active='checked';}
+else{$notsuspended='checked';}
+
+$public='';
+$private='';
+if($CurrentUser->isPublic){$public='checked';}
+else{$private='checked';}
 
 $_SESSION['Last_Page'] = 'EditUser';
 ?>
@@ -55,33 +87,40 @@ function redirect_user(){
   
 <div class="container" style="margin-top:75px">
   <div class="col-sm-6">
+    <?php
+      if($edited){
+        echo("<div class='well'>");
+        echo("Updated Successfully!");
+        echo("</div>");
+      }
+    ?>
     <form action"EditUser.php" method="post">
-      <input type="hidden" class="form-control" name="Last_Page"  value="EditUser">
+      <input type="hidden" class="form-control" name="Edited"  value="true">
       <label for="name">First Name:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->FirstName.'"')?> id="firstname">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->FirstName.'"')?> name="firstname">
       <label for="name">Last Name:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->LastName.'"')?> id="lastname">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->LastName.'"')?> name="lastname">
       <label for="dob">Date of Birth:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->DateOfBirth.'"')?> id="dob">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->DateOfBirth.'"')?> name="dob">
       <label for="interests">Interests:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->Interest.'"')?> id="interests">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->Interest.'"')?> name="interests">
       <label for="job">Job:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->Job.'"')?> id="job">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->Job.'"')?> name="job">
       <label for="emp">Employer:</label>
-      <input type="text" class="form-control"value=<?php echo('"'.$CurrentUser->Employer.'"')?> id="emp">
+      <input type="text" class="form-control"value=<?php echo('"'.$CurrentUser->Employer.'"')?> name="emp">
       <label for="pfp">Profile Picture:</label>
-      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->ProfilePicture.'"')?> id="pfp">
+      <input type="text" class="form-control" value=<?php echo('"'.$CurrentUser->ProfilePicture.'"')?> name="pfp">
       <label for="bio">Bio:</label>
-      <textarea class="form-control" rows="5" id="bio"></textarea>
+      <textarea type="text" class="form-control" rows="3" name="bio" ><?php echo($CurrentUser->Bio);?></textarea>
       <div class="well">
       <label for="susp">Suspension Status:</label>
-      <label class="radio-inline"><input type="radio" name="susp" checked>Active</label>
-      <label class="radio-inline"><input type="radio" name="susp">Suspended</label>
+      <label class="radio-inline"><input type="radio" name="susp" value="Active" <?php echo($active);?>>Active</label>
+      <label class="radio-inline"><input type="radio" name="susp" value="Suspended" <?php echo($suspended);?>>Suspended</label>
       </div>
       <div class = "well">
       <label for="priv">Privacy Status:</label>
-      <label class="radio-inline"><input type="radio" name="priv" checked>Public</label>
-      <label class="radio-inline"><input type="radio" name="priv">Private</label>
+      <label class="radio-inline"><input type="radio" name="priv" value="Public" <?php echo($public);?>>Public</label>
+      <label class="radio-inline"><input type="radio" name="priv" value="Private" <?php echo($private);?>>Private</label>
       </div>
       <button type="submit" class="btn btn-primary btn-lg">Submit</button>
     </form>

@@ -4,10 +4,12 @@ session_start();
 require_once("../Models/Post.php");
 require_once("../Models/User.php");
 require_once("../Repository/UserRepository.php");
+require_once("../Repository/PostRepository.php");
 
 $Last_Page = $_SESSION['Last_Page'];
 
 $userRepo = new UserRepository();
+$postRepo = new PostRepository();
 
 if($Last_Page == "Login"){
     $username = $_REQUEST['email'];
@@ -34,25 +36,16 @@ if($Last_Page == "Login"){
     $id = $_SESSION['id'];
 }
 
-$ViewedUser = $userRepo->getInfoByID($id);
+if(isset($_POST['New_Post'])){
+    $postRepo->addPost($id, $_POST['New_Post']);
+}
 
-//Creating a bunch of dummy posts and a post array
-$p1 = new post();
-$p2 = new post();
-$p3 = new post();
-$p4 = new post();
-$posts = array($p1, $p2, $p3, $p4);
+$ViewedUser = $userRepo->getInfoByID($id);
+$posts = $postRepo->getUserPosts($id);
 
 $LIKE = "<span class='glyphicon glyphicon-thumbs-up'></span>";
 $DISLIKE = "<span class='glyphicon glyphicon-thumbs-down'></span>";
 
-//Filling In Random Garbage information for posts
-foreach($posts as $current){
-    $current->Content   = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar in enim a commodo. Aliquam a interdum diam. Duis pretium semper leo, iaculis eleifend nibh varius sit amet. In hac habitasse platea dictumst. Vestibulum nec tincidunt velit, eget molestie elit. Integer quis gravida velit. Fusce pretium tortor ut felis faucibus suscipit. Morbi id luctus enim, vitae laoreet libero. In a dapibus lacus.";
-    $current->PostDate  = "NOPE";
-    $current->Likes     = "1";
-    $current->Dislikes = "2";
-}
 $_SESSION['Last_Page'] = 'User';
 ?>
 
@@ -114,7 +107,7 @@ function redirect_edit(){
         <div class = "well">
             <form action = "UserPage.php" method = "post">
       <input type="hidden" name = "Last_Page"  value="User"></input>
-                <textarea class="form-control" rows="3" id="bio" placeholder="What's on your mind ma dude?"></textarea>
+                <textarea class="form-control" rows="3" name="New_Post" placeholder="What's on your mind ma dude?"></textarea>
                 <button type="submit" class="btn btn-primary btn-sm">Post</button>
             </form>
         </div>
@@ -124,7 +117,10 @@ function redirect_edit(){
                     echo("<div class='well'>");
                         echo($current->Content);
                     echo("</div>");
-                    echo("<button type='button' class='btn btn-primary'>".$LIKE."</button>");
+                    echo("<form action='UserPage.php' method='post'>");
+                    echo("<input type='hidden' class='form-control' name='Like' value=".$current->PostId.">");
+                    echo("<button type='submit' class='btn btn-primary'>".$LIKE."</button>");
+                    echo('</form>');
                     echo("<button type='button' class='btn btn-danger'>".$DISLIKE."</button>");
                 echo("</div>");
             }
