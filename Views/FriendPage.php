@@ -25,6 +25,8 @@ $posts = $postRepo->getUserPosts($friend_id);
 
 $friend_status = $userRepo->isFriend($_SESSION['id'], $friend_id);
 
+$friends = $userRepo->getFriendArray($friend_id);
+
 ?>
 
 
@@ -90,16 +92,32 @@ function redirect_edit(){
                 }
             echo('</div>');
         ?>
+        <?php
+            echo("<div class = 'well'>");
+            echo("<h2>Friends</h2>");
+            foreach($friends as $friend){
+                echo("<form action='FriendPage.php' method='get'>");
+                echo("<input type='hidden' class='form-control' name='friend_id' value='".$friend->UserId."'>");
+                echo("<button type='submit' class='btn btn-block'>".$friend->Username."</button>");
+                echo('</form>');
+            }
+            echo('</div>');
+        ?>
     </div>
     <div class="col-sm-8">
         <?php
             foreach($posts as $current){
                 echo("<div class='well'>");
+                    echo("Posted By ".$current->UserId." on ".$current->PostDate);
                     echo("<div class='well'>");
                         echo($current->Content);
                     echo("</div>");
-                    echo("<button type='button' class='btn btn-primary'>".$LIKE."</button>");
+                    echo("<form action='UserPage.php' method='post'>");
+                    echo("<input type='hidden' class='form-control' name='Like' value=".$current->PostId.">");
+                    echo("<button type='submit' class='btn btn-primary'>".$LIKE."</button>");
+                    echo("<button class='btn disabled'>".$current->Rating."</button>");
                     echo("<button type='button' class='btn btn-danger'>".$DISLIKE."</button>");
+                    echo('</form>');
                 echo("</div>");
             }
         ?>

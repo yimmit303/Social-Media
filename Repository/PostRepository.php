@@ -162,7 +162,7 @@ class PostRepository extends Repository
             }
         } 
         else {
-            echo "Error getting posts: " . $conn->error;
+            //echo "Error getting posts: " . $conn->error;
         }
         return $postArray;
     }
