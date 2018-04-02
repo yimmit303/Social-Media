@@ -84,6 +84,19 @@ class UserRepository extends Repository
             echo "0 results";
         }
     }
+    function getUsernameById($userId)
+    {
+        $sql = "SELECT userId, username FROM users WHERE userId = '".$userId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                return $row["username"];
+            }
+        } 
+        else {
+            echo "0 results";
+        }
+    }
     function addUser($user)
     {
         $sql = "INSERT INTO user (username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture) 
