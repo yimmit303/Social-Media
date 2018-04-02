@@ -32,10 +32,10 @@ if($edited){
 
 $CurrentUser = $userRepo->getInfoByID($id);
 
+$active='';
 $suspended='';
-$notsuspended='';
-if($CurrentUser->isSuspended){$active='checked';}
-else{$notsuspended='checked';}
+if($CurrentUser->isSuspended){$suspended='checked';}
+else{$active='checked';}
 
 $public='';
 $private='';

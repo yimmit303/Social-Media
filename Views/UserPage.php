@@ -43,6 +43,8 @@ if(isset($_POST['New_Post'])){
 $ViewedUser = $userRepo->getInfoByID($id);
 $posts = $postRepo->getUserPosts($id);
 
+$friends = $userRepo->getFriendArray($id);
+
 $LIKE = "<span class='glyphicon glyphicon-thumbs-up'></span>";
 $DISLIKE = "<span class='glyphicon glyphicon-thumbs-down'></span>";
 
@@ -102,11 +104,21 @@ function redirect_edit(){
                 echo("<h4>Date of Birth:  ".$ViewedUser->DateOfBirth."</h4>");
             echo('</div>');
         ?>
+        <?php
+            echo("<div class = 'well'>");
+            echo("<h2>Friends</h2>");
+            foreach($friends as $friend){
+                echo("<div class = 'well'>");
+                echo($friend->Username);
+                echo('</div>');
+            }
+            echo('</div>');
+        ?>
     </div>
     <div class="col-sm-8">
         <div class = "well">
             <form action = "UserPage.php" method = "post">
-      <input type="hidden" name = "Last_Page"  value="User"></input>
+                <input type="hidden" name = "Last_Page"  value="User"></input>
                 <textarea class="form-control" rows="3" name="New_Post" placeholder="What's on your mind ma dude?"></textarea>
                 <button type="submit" class="btn btn-primary btn-sm">Post</button>
             </form>
@@ -120,8 +132,8 @@ function redirect_edit(){
                     echo("<form action='UserPage.php' method='post'>");
                     echo("<input type='hidden' class='form-control' name='Like' value=".$current->PostId.">");
                     echo("<button type='submit' class='btn btn-primary'>".$LIKE."</button>");
-                    echo('</form>');
                     echo("<button type='button' class='btn btn-danger'>".$DISLIKE."</button>");
+                    echo('</form>');
                 echo("</div>");
             }
         ?>

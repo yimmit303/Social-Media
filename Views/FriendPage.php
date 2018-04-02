@@ -1,6 +1,11 @@
 <?php //INITIAL PHP SCRIPT
 session_start();
-$friend_id = $_GET['friend_id'];
+if(isset($_GET['friend_id']))
+    {$friend_id = $_GET['friend_id'];}
+    else{$friend_id = $_SESSION['friend_id'];}
+
+$loggedin= $_SESSION['id'] ;
+$_SESSION['friend_id'] = $friend_id;
 
 require_once("../Models/Post.php");
 require_once("../Models/User.php");
@@ -14,7 +19,11 @@ $userRepo = new UserRepository();
 $postRepo = new PostRepository();
 $ViewedUser = $userRepo->getInfoByID($friend_id);
 
+if(isset($_POST['fid'])){$userRepo->addFriend($loggedin, $friend_id);}
+
 $posts = $postRepo->getUserPosts($friend_id);
+
+$friend_status = $userRepo->isFriend($_SESSION['id'], $friend_id);
 
 ?>
 
@@ -73,6 +82,12 @@ function redirect_edit(){
                 echo("<h4>First Name:  ".$ViewedUser->FirstName."</h4>");
                 echo("<h4>Last Name:  ".$ViewedUser->LastName."</h4>");
                 echo("<h4>Date of Birth:  ".$ViewedUser->DateOfBirth."</h4>");
+                if(!$friend_status){
+                    echo("<form action='FriendPage.php' method='post'>");
+                    echo('<input type="hidden" name = "fid"  value="'.$friend_id.'"></input>');
+                    echo("<button type = submit class='btn btn-primary btn-sm'>Add Friend</button>");
+                    echo("</form>");
+                }
             echo('</div>');
         ?>
     </div>
