@@ -280,5 +280,22 @@ class UserRepository extends Repository
         }
         return $friendIdArray;
     }
+    function verifyUser($username, $password)
+    {
+        $sql = "SELECT password FROM users WHERE username = '".$username."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                if($row["password"] == $password)
+                {
+                    return TRUE;
+                }
+            }
+        } 
+        else {
+            echo "0 results";
+        }
+        return FALSE;
+    }
 }
 ?>
