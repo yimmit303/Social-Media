@@ -8,14 +8,15 @@
     #echo "added user : ".($didSucceed ? "TRUE" : "FALSE");
     
     #updates Fname, Lname, DoB, interests, job, employer, profile pic, bio, suspended, private
-    $array = $postRepo->getUserPosts(1);
-    #$postRepo->addPost(1,"We're you're wor'st ene'my");
-    $postRepo->editPost(1,"I'm not testing anymore!");
-    echo "Post: ".$array[0]->Content;
-    echo "<br> Rating: ".$array[0]->Rating;
-    echo "<br>";
-    echo "Post: ".$array[1]->Content;
-    echo "<br> Rating: ".$array[1]->Rating;
-    echo "<br>complete";
+    $arr1 = $userRepo->getFriendIdArray(1);
+
+    foreach($arr1 as $id)
+    {
+        echo $id;
+        echo "<br>";
+    }
+
+    $arr2 = $postRepo->getNewsfeed($arr1);
+    echo $arr2[0]->Content;
 
 ?>

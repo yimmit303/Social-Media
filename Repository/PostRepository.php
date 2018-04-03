@@ -135,7 +135,37 @@ class PostRepository extends Repository
         }
         return $hasBeenRated;
     }
-
+    function getNewsfeed($idArray)
+    {
+        $postArray = array();
+        $sql = "SELECT userId, postId, content, timestamp, rating FROM posts WHERE ";
+        foreach($idArray as $id)
+        {
+            $sql .= "userId = '";
+            $sql .= $id;
+            $sql .= "' OR ";
+        }
+        $sql = chop($sql);
+        $sql .= "DER BY timestamp";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) 
+        {
+            while($row = $result->fetch_assoc()) 
+            {
+                $post = new Post();
+                $post->UserId = $row["userId"];
+                $post->PostId = $row["postId"];
+                $post->Content = $row["content"];
+                $post->PostDate = $row["timestamp"];
+                $post->Rating = $row["rating"];
+                $postArray[] = $post;
+            }
+        } 
+        else {
+            echo "Error getting posts: " . $conn->error;
+        }
+        return $postArray;
+    }
 }
 
 ?>

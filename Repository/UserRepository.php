@@ -37,9 +37,9 @@ class UserRepository extends Repository
         }
         return $doesExist;
     }
-    function getInfoByID($id, $getFriendsArray = FALSE)
+    function getInfoByID($userId, $getFriendsArray = FALSE)
     {
-        $sql = "SELECT userId, username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture FROM users WHERE userId = '".$id."'";
+        $sql = "SELECT userId, username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture FROM users WHERE userId = '".$userId."'";
         $result = $this->conn->query($sql);
         if ($result->num_rows > 0) {
             // output data of each row
@@ -78,6 +78,19 @@ class UserRepository extends Repository
                 if ($row["username"] == $username){
                     return $row["userId"];
                 }
+            }
+        } 
+        else {
+            echo "0 results";
+        }
+    }
+    function getUsernameById($userId)
+    {
+        $sql = "SELECT userId, username FROM users WHERE userId = '".$userId."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                return $row["username"];
             }
         } 
         else {
@@ -169,14 +182,25 @@ class UserRepository extends Repository
             return $nameArray;
         }
     }
-    function updateUser($userInfoArray, $id)
+    function updateUser($userInfoArray, $userId)
     {
         #updates Fname, Lname, DoB, interests, job, employer, profile pic, bio, suspended, private
         $wasSuccessful = FALSE;
         $sql = "UPDATE users SET firstName = '".$userInfoArray[0]."', lastName = '".$userInfoArray[1]."', ";
         $sql .= "dateOfBirth = '".$userInfoArray[2]."', interest = '".$userInfoArray[3]."', job = '".$userInfoArray[4]."', ";
         $sql .= "employeer = '".$userInfoArray[5]."', profilePicture = '".$userInfoArray[6]."', bio = '".$userInfoArray[7]."', ";
-        $sql .= "isSuspended = '".$userInfoArray[8]."', isPublic = '".$userInfoArray[9]."' WHERE userId = ".$id;
+        $sql .= "isSuspended = '".$userInfoArray[8]."', isPublic = '".$userInfoArray[9]."' WHERE userId = ".$userId;
+        if ($this->conn->query($sql) === TRUE) {
+            $wasSuccessful = TRUE;
+        } else {
+            echo "Error updating record: " . $this->conn->error;
+        }
+        return $wasSuccessful;
+    }
+    function updatePassword($newPass, $userId)
+    {
+        $wasSuccessful = FALSE;
+        $sql = "UPDATE users SET password = '".$newPass."' WHERE userId = ".$userId;
         if ($this->conn->query($sql) === TRUE) {
             $wasSuccessful = TRUE;
         } else {
@@ -241,9 +265,37 @@ class UserRepository extends Repository
         } 
         else 
         {
-            echo "Error getting friends: " . $conn->error;
+            //echo "Error getting friends: " . $conn->error;
         }
         return $friendArray;
+    }
+    function getFriendIdArray($userId)
+    {
+        $friendIdArray = array();
+        $user = $this->getInfoByID($userId, TRUE);
+        $friendIdArray[] = $user->UserId;
+        foreach ($user->friendArray as $friend) 
+        {
+            $friendIdArray[] = $friend->UserId;
+        }
+        return $friendIdArray;
+    }
+    function verifyUser($username, $password)
+    {
+        $sql = "SELECT password FROM users WHERE username = '".$username."'";
+        $result = $this->conn->query($sql);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                if($row["password"] == $password)
+                {
+                    return TRUE;
+                }
+            }
+        } 
+        else {
+            echo "0 results";
+        }
+        return FALSE;
     }
 }
 ?>
