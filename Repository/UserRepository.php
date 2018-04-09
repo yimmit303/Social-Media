@@ -99,16 +99,27 @@ class UserRepository extends Repository
     }
     function addUser($user)
     {
-        $sql = "INSERT INTO user (username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture) 
-        VALUES (".$user->Username.", ".$user->Password.", ".$user->FirstName.", ".$user->LastName.", ".$user->DateOfBirth.", ".$user->Bio.", ".$user->Interest.", ".$user->Job.", ".$user->Employer.", ".$user->isSuspended.", ".$user->isPrivate.", ".$user->ProfilePicture.")";
+        if($this->isValidUser($user->username))
+        {
+            $sql = "INSERT INTO users (username, password, firstName, lastName, dateOfBirth, bio, interest, job, employeer, isSuspended, isPublic, profilePicture) 
+            VALUES ('".$user->Username."', '".$user->Password."', '".$user->FirstName."', '".$user->LastName."', '".$user->DateOfBirth."', '".$user->Bio."', '".$user->Interest."', '".$user->Job."', '".$user->Employer."', '".$user->isSuspended."', '".$user->isPublic."', '".$user->ProfilePicture."')";
+            if (mysqli_query($this->conn, $sql)) {
+                return TRUE;
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+            } 
+        }   
     }
     function addUserBaseInfo($username, $password, $firstname, $lastname)
     {
-        $sql = "INSERT INTO users (username, password, firstName, lastName) VALUES ('".$username."', '".$password."', '".$firstname."', '".$lastname."')";
-        if (mysqli_query($this->conn, $sql)) {
-            return TRUE;
-        } else {
-            echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+        if($this->isValidUser($username))
+        {
+            $sql = "INSERT INTO users (username, password, firstName, lastName) VALUES ('".$username."', '".$password."', '".$firstname."', '".$lastname."')";
+            if (mysqli_query($this->conn, $sql)) {
+                return TRUE;
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($this->conn);
+            }
         }
     }
     function searchUser($name)
