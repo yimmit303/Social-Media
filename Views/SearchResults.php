@@ -38,6 +38,12 @@ function redirect_user(){
 function redirect_edit(){
     window.location.href = 'EditUser.php';
 }
+function redirect_friends(){
+    window.location.href = 'ManageFriends.php';
+}
+function logout(){
+    window.location.href = 'Login.php';
+}
 </script>
 
 <body>
@@ -50,9 +56,9 @@ function redirect_edit(){
     </div>
     <ul class="nav navbar-nav">
 
-      <li onclick='redirect_user()'><a href="#">User Page</a></li>
-      <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
-      <li><a href="#">Manage Friends</a></li>
+<li onclick='redirect_user()'><a href="#">User Page</a></li>
+<li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
+<li onclick='redirect_friends()'><a href="#">Friends</a></li>
     
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
@@ -61,7 +67,7 @@ function redirect_edit(){
         </div>
     </form>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
+      <li onclick='logout();'><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
     </ul>
   </div>
 </nav>

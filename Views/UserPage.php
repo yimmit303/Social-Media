@@ -4,10 +4,12 @@ session_start();
 require_once("../Models/Post.php");
 require_once("../Models/User.php");
 require_once("../Repository/UserRepository.php");
+require_once("../Repository/PostRepository.php");
 
 $Last_Page = $_SESSION['Last_Page'];
 
 $userRepo = new UserRepository();
+$postRepo = new PostRepository();
 
 if($Last_Page == "Login"){
     $username = $_REQUEST['email'];
@@ -34,25 +36,32 @@ if($Last_Page == "Login"){
     $id = $_SESSION['id'];
 }
 
-$ViewedUser = $userRepo->getInfoByID($id);
+if(isset($_POST['New_Post'])){
+    $postRepo->addPost($id, $_POST['New_Post']);
+}
 
-//Creating a bunch of dummy posts and a post array
-$p1 = new post();
-$p2 = new post();
-$p3 = new post();
-$p4 = new post();
-$posts = array($p1, $p2, $p3, $p4);
+$ViewedUser = $userRepo->getInfoByID($id);
+$loggedin = $ViewedUser->UserId;
+
+$friends = $userRepo->getFriendArray($id);
+$posts = array();
+$friendids = array();
+if(!empty($friends)){
+    foreach($friends as $friend){
+        array_push($friendids, $friend->UserId);
+    }
+}
+array_push($friendids, $ViewedUser->UserId);
+$posts = array_reverse($postRepo->getNewsFeed($friendids));
 
 $LIKE = "<span class='glyphicon glyphicon-thumbs-up'></span>";
 $DISLIKE = "<span class='glyphicon glyphicon-thumbs-down'></span>";
 
-//Filling In Random Garbage information for posts
-foreach($posts as $current){
-    $current->Content   = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus pulvinar in enim a commodo. Aliquam a interdum diam. Duis pretium semper leo, iaculis eleifend nibh varius sit amet. In hac habitasse platea dictumst. Vestibulum nec tincidunt velit, eget molestie elit. Integer quis gravida velit. Fusce pretium tortor ut felis faucibus suscipit. Morbi id luctus enim, vitae laoreet libero. In a dapibus lacus.";
-    $current->PostDate  = "NOPE";
-    $current->Likes     = "1";
-    $current->Dislikes = "2";
+if(isset($_POST['rate'])){
+    if($_POST['rate'] == 'like'){$postRepo->like($loggedin, $_POST['Post_Rated']);}
+    if($_POST['rate'] == 'dislike'){$postRepo->dislike($loggedin, $_POST['Post_Rated']);}
 }
+
 $_SESSION['Last_Page'] = 'User';
 ?>
 
@@ -72,6 +81,12 @@ $_SESSION['Last_Page'] = 'User';
 function redirect_edit(){
     window.location.href = 'EditUser.php';
 }
+function redirect_friends(){
+    window.location.href = 'ManageFriends.php';
+}
+function logout(){
+    window.location.href = 'Login.php';
+}
 </script>
 
 <body>
@@ -84,7 +99,7 @@ function redirect_edit(){
     <ul class="nav navbar-nav">
       <li class='active'><a href="#">User Page</a></li>
       <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
-      <li><a href="#">Manage Friends</a></li>
+      <li onclick='redirect_friends()'><a href="#">Friends</a></li>
 
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
@@ -93,7 +108,7 @@ function redirect_edit(){
         </div>
     </form>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
+      <li onclick='logout();'><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
     </ul>
   </div>
 </nav>
@@ -109,23 +124,41 @@ function redirect_edit(){
                 echo("<h4>Date of Birth:  ".$ViewedUser->DateOfBirth."</h4>");
             echo('</div>');
         ?>
+        <?php
+            echo("<div class = 'well'>");
+            echo("<h2>Friends</h2>");
+            foreach($friends as $friend){
+                echo("<form action='FriendPage.php' method='get'>");
+                echo("<input type='hidden' class='form-control' name='friend_id' value='".$friend->UserId."'>");
+                echo("<button type='submit' class='btn btn-block'>".$friend->Username."</button>");
+                echo('</form>');
+            }
+            echo('</div>');
+        ?>
     </div>
     <div class="col-sm-8">
         <div class = "well">
             <form action = "UserPage.php" method = "post">
-      <input type="hidden" name = "Last_Page"  value="User"></input>
-                <textarea class="form-control" rows="3" id="bio" placeholder="What's on your mind ma dude?"></textarea>
+                <input type="hidden" name = "Last_Page"  value="User"></input>
+                <textarea class="form-control" rows="3" name="New_Post" placeholder="What's on your mind ma dude?"></textarea>
                 <button type="submit" class="btn btn-primary btn-sm">Post</button>
             </form>
         </div>
         <?php
             foreach($posts as $current){
                 echo("<div class='well'>");
+                    echo("Posted By ".$userRepo->getUsernameById($current->UserId)." on ".$current->PostDate);
                     echo("<div class='well'>");
-                        echo($current->Content);
+                    echo($current->Content);
                     echo("</div>");
-                    echo("<button type='button' class='btn btn-primary'>".$LIKE."</button>");
-                    echo("<button type='button' class='btn btn-danger'>".$DISLIKE."</button>");
+                    echo("<form class='form-inline' action='UserPage.php' method='post'>");
+                        echo("<input type='hidden' class='form-control' name='Post_Rated' value=".$current->PostId.">");
+                        echo("<div class='btn-group btn-group-sm'>");
+                            echo("<button type='submit' class='btn btn-primary' name='rate' value='like'>[".$LIKE."]</button>");
+                            echo("<button type='button' class='btn btn-disabled'>".$current->Rating."</button>");
+                            echo("<button type='submit' class='btn btn-danger' name='rate' value='dislike'>[".$DISLIKE."]</button>");
+                        echo("</div>");
+                    echo('</form>');
                 echo("</div>");
             }
         ?>

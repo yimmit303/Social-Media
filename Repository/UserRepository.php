@@ -215,7 +215,7 @@ class UserRepository extends Repository
         if ($this->conn->query($sql) === TRUE) {
             $wasSuccessful = TRUE;
         } else {
-            echo "Error updating record: " . $conn->error;
+            echo "Error updating record: " . $this->conn->error;
         }
         return $wasSuccessful;
     }
