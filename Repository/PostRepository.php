@@ -20,6 +20,21 @@ class PostRepository extends Repository
             $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
             $this->conn->query($sql);
         }
+        else
+        {
+            #If the person has already liked the post 
+            $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
+            if ($this->conn->query($sql) === TRUE) 
+            {
+                $wasSuccessful = TRUE;
+            } 
+            else 
+            {
+                echo "Error updating record: " . $conn->error;
+            }
+            $sql = "DELETE FROM postsrating WHERE userId = '".$userId."' AND postId = '".$postId."'";
+            $this->conn->query($sql);
+        }
         return $wasSuccessful;
     }
     function dislike($userId, $postId)
@@ -27,6 +42,7 @@ class PostRepository extends Repository
         $wasSuccessful = FALSE;
         if(!$this->hasBeenRated($userId, $postId))
         {
+            #If the person has not liked the post
             $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
             if ($this->conn->query($sql) === TRUE) 
             {
@@ -37,6 +53,21 @@ class PostRepository extends Repository
                 echo "Error updating record: " . $conn->error;
             }
             $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
+            $this->conn->query($sql);
+        }
+        else
+        {
+            #If the person has already liked the post 
+            $sql = "UPDATE posts SET rating = rating + 1 WHERE postId = '".$postId."'";
+            if ($this->conn->query($sql) === TRUE) 
+            {
+                $wasSuccessful = TRUE;
+            } 
+            else 
+            {
+                echo "Error updating record: " . $conn->error;
+            }
+            $sql = "DELETE FROM postsrating WHERE userId = '".$userId."' AND postId = '".$postId."'";
             $this->conn->query($sql);
         }
         return $wasSuccessful;
