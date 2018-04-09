@@ -41,6 +41,7 @@ if(isset($_POST['New_Post'])){
 }
 
 $ViewedUser = $userRepo->getInfoByID($id);
+$loggedin = $ViewedUser->UserId;
 
 $friends = $userRepo->getFriendArray($id);
 $posts = array();
@@ -55,6 +56,11 @@ $posts = array_reverse($postRepo->getNewsFeed($friendids));
 
 $LIKE = "<span class='glyphicon glyphicon-thumbs-up'></span>";
 $DISLIKE = "<span class='glyphicon glyphicon-thumbs-down'></span>";
+
+if(isset($_POST['rate'])){
+    if($_POST['rate'] == 'like'){$postRepo->like($loggedin, $_POST['Post_Rated']);}
+    if($_POST['rate'] == 'dislike'){$postRepo->dislike($loggedin, $_POST['Post_Rated']);}
+}
 
 $_SESSION['Last_Page'] = 'User';
 ?>
@@ -75,6 +81,12 @@ $_SESSION['Last_Page'] = 'User';
 function redirect_edit(){
     window.location.href = 'EditUser.php';
 }
+function redirect_friends(){
+    window.location.href = 'ManageFriends.php';
+}
+function logout(){
+    window.location.href = 'Login.php';
+}
 </script>
 
 <body>
@@ -87,7 +99,7 @@ function redirect_edit(){
     <ul class="nav navbar-nav">
       <li class='active'><a href="#">User Page</a></li>
       <li onclick='redirect_edit()'><a href="#">Edit Yourself</a></li>
-      <li><a href="#">Manage Friends</a></li>
+      <li onclick='redirect_friends()'><a href="#">Friends</a></li>
 
     </ul>
     <form class="navbar-form navbar-left" action="SearchResults.php">
@@ -96,7 +108,7 @@ function redirect_edit(){
         </div>
     </form>
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
+      <li onclick='logout();'><a href="#"><span class="glyphicon glyphicon-minus-sign"></span> Logout</a></li>
     </ul>
   </div>
 </nav>
@@ -135,15 +147,17 @@ function redirect_edit(){
         <?php
             foreach($posts as $current){
                 echo("<div class='well'>");
-                    echo("Posted By ".$current->UserId." on ".$current->PostDate);
+                    echo("Posted By ".$userRepo->getUsernameById($current->UserId)." on ".$current->PostDate);
                     echo("<div class='well'>");
-                        echo($current->Content);
+                    echo($current->Content);
                     echo("</div>");
-                    echo("<form action='UserPage.php' method='post'>");
-                    echo("<input type='hidden' class='form-control' name='Like' value=".$current->PostId.">");
-                    echo("<button type='submit' class='btn btn-primary'>".$LIKE."</button>");
-                    echo("<button class='btn disabled'>".$current->Rating."</button>");
-                    echo("<button type='button' class='btn btn-danger'>".$DISLIKE."</button>");
+                    echo("<form class='form-inline' action='UserPage.php' method='post'>");
+                        echo("<input type='hidden' class='form-control' name='Post_Rated' value=".$current->PostId.">");
+                        echo("<div class='btn-group btn-group-sm'>");
+                            echo("<button type='submit' class='btn btn-primary' name='rate' value='like'>[".$LIKE."]</button>");
+                            echo("<button type='button' class='btn btn-disabled'>".$current->Rating."</button>");
+                            echo("<button type='submit' class='btn btn-danger' name='rate' value='dislike'>[".$DISLIKE."]</button>");
+                        echo("</div>");
                     echo('</form>');
                 echo("</div>");
             }
