@@ -5,72 +5,25 @@ class PostRepository extends Repository
 {
     function like($userId, $postId)
     {
-        $wasSuccessful = FALSE;
         if(!$this->hasBeenRated($userId, $postId))
         {
+            #the person has not liked the post
             $sql = "UPDATE posts SET rating = rating + 1 WHERE postId = '".$postId."'";
-            if ($this->conn->query($sql) === TRUE) 
-            {
-                $wasSuccessful = TRUE;
-            } 
-            else 
-            {
-                echo "Error updating record: " . $conn->error;
-            }
-            $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
+            $this->conn->query($sql);
+            $sql = "INSERT INTO postsrating (userId, postId, ratingType) VALUES ('".$userId."', '".$postId."', '1')";
             $this->conn->query($sql);
         }
-        else
-        {
-            #If the person has already liked the post 
-            $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
-            if ($this->conn->query($sql) === TRUE) 
-            {
-                $wasSuccessful = TRUE;
-            } 
-            else 
-            {
-                echo "Error updating record: " . $conn->error;
-            }
-            $sql = "DELETE FROM postsrating WHERE userId = '".$userId."' AND postId = '".$postId."'";
-            $this->conn->query($sql);
-        }
-        return $wasSuccessful;
     }
     function dislike($userId, $postId)
     {
-        $wasSuccessful = FALSE;
         if(!$this->hasBeenRated($userId, $postId))
         {
             #If the person has not liked the post
             $sql = "UPDATE posts SET rating = rating - 1 WHERE postId = '".$postId."'";
-            if ($this->conn->query($sql) === TRUE) 
-            {
-                $wasSuccessful = TRUE;
-            } 
-            else 
-            {
-                echo "Error updating record: " . $conn->error;
-            }
-            $sql = "INSERT INTO postsrating (userId, postId) VALUES ('".$userId."', '".$postId."')";
+            $this->conn->query($sql);
+            $sql = "INSERT INTO postsrating (userId, postId, ratingType) VALUES ('".$userId."', '".$postId."', '0')";
             $this->conn->query($sql);
         }
-        else
-        {
-            #If the person has already liked the post 
-            $sql = "UPDATE posts SET rating = rating + 1 WHERE postId = '".$postId."'";
-            if ($this->conn->query($sql) === TRUE) 
-            {
-                $wasSuccessful = TRUE;
-            } 
-            else 
-            {
-                echo "Error updating record: " . $conn->error;
-            }
-            $sql = "DELETE FROM postsrating WHERE userId = '".$userId."' AND postId = '".$postId."'";
-            $this->conn->query($sql);
-        }
-        return $wasSuccessful;
     }
     function getUserPosts($userId)
     {
